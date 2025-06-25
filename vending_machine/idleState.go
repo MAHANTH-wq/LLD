@@ -18,6 +18,11 @@ func (i *idleState) insertMoney() error {
 	return nil
 }
 
+func (i *idleState) removeItem() error {
+	fmt.Println("No Items Added to cart")
+	return nil
+}
+
 func (i *idleState) requestItem() error {
 
 	fmt.Println("Please Enter the item code to select an item:")

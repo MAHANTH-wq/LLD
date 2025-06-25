@@ -47,6 +47,34 @@ func (a *hasItem) requestItem() error {
 	return nil
 }
 
+func (i *hasItem) removeItem() error {
+	fmt.Println("Please select the item code to be removed: ")
+	for _, item := range i.vm.requestedItems {
+		fmt.Println("Item Name: ", item.itemName)
+		fmt.Println("Item Code: ", item.itemCode)
+		fmt.Println("Item Cost:", item.itemCost)
+	}
+	reader := bufio.NewReader(os.Stdin)
+	input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(input)
+
+	itemCode, _ := strconv.Atoi(input)
+
+	validItemCode := false
+	for index, item := range i.vm.requestedItems {
+
+		if item.itemCode == itemCode {
+			validItemCode = true
+			i.vm.requestedItems = append(i.vm.requestedItems[0:index], i.vm.requestedItems[index+1:]...)
+		}
+	}
+
+	if !validItemCode {
+		fmt.Println("Invalid Item Code to be removed")
+	}
+
+	return nil
+}
 func (a *hasItem) insertMoney() error {
 
 	totalCost := 0
@@ -67,12 +95,12 @@ func (a *hasItem) insertMoney() error {
 	fmt.Println("amount receivied ", amountGiven)
 	a.vm.currentAmount += amountGiven
 
-	if a.vm.currentAmount == totalCost {
+	if a.vm.currentAmount >= totalCost {
 		fmt.Println("Money is sufficient to process the cart.")
 		a.vm.setState(a.vm.hasMoneyState)
 	} else {
 		pendingAmount := totalCost - a.vm.currentAmount
-		fmt.Println("Please add pending amount ", pendingAmount)
+		fmt.Println("Please remove items or add pending amount ", pendingAmount)
 	}
 
 	return nil

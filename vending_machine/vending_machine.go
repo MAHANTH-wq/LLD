@@ -59,6 +59,10 @@ func (vm *vendingMachine) requestItem() {
 
 }
 
+func (vm *vendingMachine) removeItem() {
+	vm.currentState.removeItem()
+}
+
 func (vm *vendingMachine) dispenseItem() {
 	vm.currentState.dispenseItem()
 
