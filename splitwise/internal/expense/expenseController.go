@@ -3,6 +3,7 @@ package expense
 import (
 	"splitwise/internal/balanceSheet"
 	"splitwise/internal/split"
+	"splitwise/internal/transaction"
 	"splitwise/internal/user"
 )
 
@@ -36,6 +37,16 @@ func (ec *ExpenseController) AddNewExpense(name string, paidByUser *user.User, s
 
 }
 
+func (ec *ExpenseController) AddIndividualUserExpense(name string, paidByUser *user.User, toUser *user.User, totalAmount int) *Expense {
+
+	splitValue := split.CreateNewSplit(toUser, totalAmount)
+	listOfSplits := make([]*split.Split, 0)
+	listOfSplits = append(listOfSplits, splitValue)
+	expense := CreateExpense(name, paidByUser, listOfSplits, totalAmount, split.UnequalSplit)
+	ec.ProcessExpense(expense)
+	return expense
+
+}
 func (ec *ExpenseController) ProcessExpense(e *Expense) error {
 
 	splitList := e.GetSplitList()
@@ -45,8 +56,14 @@ func (ec *ExpenseController) ProcessExpense(e *Expense) error {
 			continue
 		}
 
-		ec.balanceSheetController.AddTransaction(e.GetPaidByUser(), split.GetSplitUser(), split.GetSplitAmount())
+		newTransaction := transaction.NewTransaction(e.GetPaidByUser(), split.GetSplitUser(), split.GetSplitAmount())
+
+		ec.balanceSheetController.AddTransaction(newTransaction)
 	}
 
 	return nil
+}
+
+func (ec *ExpenseController) SimplifyDebt() {
+	ec.balanceSheetController.SimplifyDebt()
 }

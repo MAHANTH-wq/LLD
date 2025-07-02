@@ -59,6 +59,13 @@ func (g *Group) addSplitToUsers() ([]*split.Split, error) {
 }
 
 func (g *Group) addUserToGroup(u *user.User) {
+
+	for _, user := range g.users {
+		if user.GetUserId() == u.GetUserId() {
+			fmt.Println("User is already part of the group")
+			return
+		}
+	}
 	g.users = append(g.users, u)
 }
 

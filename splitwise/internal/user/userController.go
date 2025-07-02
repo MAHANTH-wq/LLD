@@ -1,6 +1,9 @@
 package user
 
-import "fmt"
+import (
+	"fmt"
+	"splitwise/internal/utils"
+)
 
 type UserController struct {
 	users []*User
@@ -18,6 +21,7 @@ func (uc *UserController) ListAllUsers() {
 		fmt.Println("User Id: ", user.id, " User Name: ", user.name)
 	}
 }
+
 func (uc *UserController) AddNewUser(uName string) *User {
 
 	id := len(uc.users) + 1
@@ -49,4 +53,31 @@ func (uc *UserController) GetUser(userId int) *User {
 	}
 	fmt.Println("No user with id ", userId)
 	return nil
+}
+
+func (uc *UserController) GetNewIndividualSplitInput() (*User, *User, int, error) {
+
+	fmt.Println("Select the paid user id from below")
+	uc.ListAllUsers()
+	fromUserId, err := utils.GetIntegerInput()
+
+	if err != nil {
+		return nil, nil, 0, err
+	}
+	fmt.Println("Select the reciever user id from below")
+	uc.ListAllUsers()
+	toUserId, err := utils.GetIntegerInput()
+
+	if err != nil {
+		return nil, nil, 0, err
+	}
+
+	fmt.Println("Enter the amount paid")
+	amount, err := utils.GetIntegerInput()
+
+	if err != nil {
+		return nil, nil, 0, err
+	}
+
+	return uc.GetUser(fromUserId), uc.GetUser(toUserId), amount, nil
 }

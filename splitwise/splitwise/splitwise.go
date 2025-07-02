@@ -1,4 +1,4 @@
-package main
+package splitwise
 
 import (
 	"fmt"
@@ -13,38 +13,37 @@ type expenseType int
 
 const (
 	groupExpense expenseType = iota
-	nonGroupExpense
 )
 
 type splitwise struct {
 	groupController   *group.GroupController
-	userController    *user.UserController
-	expenseController *expense.ExpenseController
+	UserController    *user.UserController
+	ExpenseController *expense.ExpenseController
 }
 
-func newSplitwiseApp() *splitwise {
+func NewSplitwiseApp() *splitwise {
 
 	return &splitwise{
 		groupController:   group.NewGroupController(),
-		userController:    user.NewUserController(),
-		expenseController: expense.NewExpenseController(),
+		UserController:    user.NewUserController(),
+		ExpenseController: expense.NewExpenseController(),
 	}
 }
 
-func (app *splitwise) addNewUser() {
+func (app *splitwise) AddNewUser() {
 	fmt.Println("Enter username")
 	userName, _ := utils.GetStringInput()
-	newUser := app.userController.AddNewUser(userName)
-	app.expenseController.AddNewUser(newUser)
+	newUser := app.UserController.AddNewUser(userName)
+	app.ExpenseController.AddNewUser(newUser)
 }
 
-func (app *splitwise) addNewGroup() {
+func (app *splitwise) AddNewGroup() {
 	fmt.Println("Enter groupName")
 	groupName, _ := utils.GetStringInput()
 	app.groupController.AddNewGroup(groupName)
 }
 
-func (app *splitwise) addUserToGroup() {
+func (app *splitwise) AddUserToGroup() {
 	fmt.Println("Select the groupid from below")
 	app.groupController.ListAllGroups()
 
@@ -52,22 +51,22 @@ func (app *splitwise) addUserToGroup() {
 
 	fmt.Println("Select the userId from below")
 
-	app.userController.ListAllUsers()
+	app.UserController.ListAllUsers()
 
 	userId, _ := utils.GetIntegerInput()
 
-	userToBeAdded := app.userController.GetUser(userId)
+	userToBeAdded := app.UserController.GetUser(userId)
 
 	app.groupController.AddUserToGroup(groupId, userToBeAdded)
 
 }
 
-func (app *splitwise) printBalanceSheet() {
+func (app *splitwise) PrintBalanceSheet() {
 
-	app.expenseController.PrintBalanceSheet()
+	app.ExpenseController.PrintBalanceSheet()
 }
 
-func (app *splitwise) addExpense() error {
+func (app *splitwise) AddExpense() error {
 
 	fmt.Println("Enter the option\n 0 for group expense \n 1 for non group expense")
 
@@ -80,9 +79,7 @@ func (app *splitwise) addExpense() error {
 
 	switch expenseType(option) {
 	case groupExpense:
-		app.createGroupExpense()
-	case nonGroupExpense:
-		app.createNonGroupExpense()
+		app.CreateGroupExpense()
 	default:
 		return fmt.Errorf("Try again by selecting valid option")
 	}
@@ -91,7 +88,7 @@ func (app *splitwise) addExpense() error {
 
 }
 
-func (app *splitwise) createGroupExpense() error {
+func (app *splitwise) CreateGroupExpense() error {
 	fmt.Println("Select the group id from the following: ")
 	app.groupController.ListAllGroups()
 	groupId, ok := utils.GetIntegerInput()
@@ -116,7 +113,7 @@ func (app *splitwise) createGroupExpense() error {
 		return err
 	}
 
-	paidUser := app.userController.GetUser(paidUserId)
+	paidUser := app.UserController.GetUser(paidUserId)
 
 	fmt.Println("Enter the total Amount to be split ")
 
@@ -132,13 +129,23 @@ func (app *splitwise) createGroupExpense() error {
 		return err
 	}
 
-	expense := app.expenseController.AddNewExpense("Expense Name bla bla", paidUser, splitAmountsList, totalAmountPaid, split.UnequalSplit)
+	expense := app.ExpenseController.AddNewExpense("Expense Name bla bla", paidUser, splitAmountsList, totalAmountPaid, split.UnequalSplit)
 
 	app.groupController.AddExpenseToGroup(groupId, expense)
 
 	return nil
 }
 
-func (app *splitwise) createNonGroupExpense() error {
+func (app *splitwise) CreateNonGroupExpense() error {
+
+	fromUser, toUser, amount, err := app.UserController.GetNewIndividualSplitInput()
+	if err != nil {
+		return err
+	}
+	app.ExpenseController.AddIndividualUserExpense("Individual Expense", fromUser, toUser, amount)
+
 	return nil
+}
+func (app *splitwise) SimplifyDebt() {
+	app.ExpenseController.SimplifyDebt()
 }

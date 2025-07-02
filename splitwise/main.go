@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"splitwise/internal/utils"
+	"splitwise/splitwise"
 )
 
 func main() {
 
-	splitWiseApp := newSplitwiseApp()
+	splitWiseApp := splitwise.NewSplitwiseApp()
 
 	for {
 
@@ -18,7 +19,8 @@ func main() {
 			"\n 4 to create group expense" +
 			"\n 5 to create nongroup expense" +
 			"\n 6 to print balance sheet" +
-			"\n 7 to quit")
+			"\n 7 to simplify debt" +
+			"\n 8 to quit")
 		option, err := utils.GetIntegerInput()
 
 		if err != nil {
@@ -28,18 +30,21 @@ func main() {
 
 		switch option {
 		case 1:
-			splitWiseApp.addNewUser()
+			splitWiseApp.AddNewUser()
 		case 2:
-			splitWiseApp.addNewGroup()
+			splitWiseApp.AddNewGroup()
 		case 3:
-			splitWiseApp.addUserToGroup()
+			splitWiseApp.AddUserToGroup()
 		case 4:
-			splitWiseApp.createGroupExpense()
+			splitWiseApp.CreateGroupExpense()
 		case 5:
-			splitWiseApp.createNonGroupExpense()
+			splitWiseApp.CreateNonGroupExpense()
 		case 6:
-			splitWiseApp.printBalanceSheet()
+			splitWiseApp.PrintBalanceSheet()
 		case 7:
+			splitWiseApp.SimplifyDebt()
+		case 8:
+			fmt.Println("Exit Program")
 			return
 		default:
 			fmt.Println("Select Valid Option")

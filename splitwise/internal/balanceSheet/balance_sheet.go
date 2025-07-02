@@ -45,10 +45,10 @@ func (bs *BalanceSheet) addGetBackMoneyFromUser(u *user.User, amount int) {
 
 	if !ok {
 		bs.usersMoneyMap[u] = amount
-		return
+	} else {
+		bs.usersMoneyMap[u] = currentAmount + amount
 	}
 
-	bs.usersMoneyMap[u] = currentAmount + amount
 	bs.totalGetBack = bs.totalGetBack + amount
 }
 
@@ -58,8 +58,9 @@ func (bs *BalanceSheet) addGiveBackMoneyToUser(u *user.User, amount int) {
 
 	if !ok {
 		bs.usersMoneyMap[u] = -amount
-		return
+	} else {
+		bs.usersMoneyMap[u] = currentAmount - amount
 	}
-	bs.usersMoneyMap[u] = currentAmount - amount
+
 	bs.totalGiveBack = bs.totalGiveBack - amount
 }
