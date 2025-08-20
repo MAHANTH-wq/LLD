@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 func main() {
@@ -29,6 +30,16 @@ func main() {
 
 	wp := newWordProcessor(files1)
 	wp.Run()
+	//
+	// Use the Rover example
+	rover := newRover()
+	rover.startRover()
+	rover.moveLeft()
+	time.Sleep(1 * time.Second)
+	rover.moveRight()
+	time.Sleep(1 * time.Second)
+	rover.stop()
+	time.Sleep(5 * time.Second)
 
 }
 
