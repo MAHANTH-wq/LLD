@@ -34,4 +34,18 @@ func main() {
 	fmt.Println("No of Distinct Substrings of apple ", count)
 	count = CountNoOfDistinctSubStrings("ababd")
 	fmt.Println("No of Distinct Substrings of ababd ", count)
+
+	// XOR EXAMPLES
+	fmt.Println("<---------------------XOR EXAMPLES---------------------->")
+	binaryTrieData := NewBinaryTRIE()
+
+	binaryTrieData.Insert(9)
+	binaryTrieData.Insert(8)
+	binaryTrieData.Insert(7)
+	binaryTrieData.Insert(5)
+	binaryTrieData.Insert(4)
+
+	maxResult := binaryTrieData.FindMaximumXORWithElement(8)
+	fmt.Println("Maximum XOR with element 8 ", maxResult)
+
 }
